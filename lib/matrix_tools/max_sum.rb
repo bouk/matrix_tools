@@ -2,7 +2,7 @@ require 'matrix'
 
 class Matrix
   # Uses O(N^4) dynamic programming algorithm
-  def maximum_submatrix_sum
+  def max_sum
     # Field (row, column) of this array will contains the submatrix sum of (0, 0) to (row, column)
     sums = Array.new(row_size) { Array.new(column_size) { 0 } }
 
