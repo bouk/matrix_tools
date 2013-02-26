@@ -10,36 +10,27 @@ class Matrix
       (0..column_size - 1).each do |column|
         sums[row][column] = element(row, column)
 
-        if row > 0
-          sums[row][column] += sums[row - 1][column]
-        end
-
-        if column > 0
-          sums[row][column] += sums[row][column - 1]
-        end
+        sums[row][column] += sums[row - 1][column] if row > 0
+        sums[row][column] += sums[row][column - 1] if column > 0
 
         # Make sure we don't count a submatrix double
-        if row > 0 && column > 0
-          sums[row][column] -= sums[row - 1][column - 1]
-        end
+        sums[row][column] -= sums[row - 1][column - 1] if row > 0 && column > 0
       end
     end
 
+    # Go through all possible submatrices (which is O(N^4)) and calculate the sum
+    # of that submatrix, which is O(1) by using the sums array created above
     best_sum = sums[0][0]
     (0..row_size - 1).each do |start_row|
       (0..column_size - 1).each do |start_column|
         (start_row..row_size - 1).each do |end_row|
           (start_column..column_size - 1).each do |end_column|
             subsum = sums[end_row][end_column]
-            if start_row > 0
-              subsum -= sums[start_row - 1][end_column]
-            end
-            if start_column > 0
-              subsum -= sums[end_row][start_column - 1]
-            end
-            if start_row > 0 && start_column > 0
-              subsum += sums[start_row - 1][start_column - 1]
-            end
+
+            subsum -= sums[start_row - 1][end_column] if start_row > 0
+            subsum -= sums[end_row][start_column - 1] if start_column > 0
+
+            subsum += sums[start_row - 1][start_column - 1] if start_row > 0 && start_column > 0
 
             best_sum = [best_sum, subsum].max
           end
